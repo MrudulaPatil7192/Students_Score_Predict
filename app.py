@@ -112,8 +112,6 @@ st.markdown("""
     .metric-badge {
         display: inline-block;
         padding: 6px 14px;
-        background: #ecfdf5;
-        color: #059669;
         font-size: 12px;
         font-weight: 700;
         border-radius: 20px;
@@ -207,26 +205,26 @@ if st.button("Analyze & Compute Grade"):
     # Process output matrix scalar
     prediction = float(model.predict(features)[0])
     
-    # Determine visual category metrics based on predicted output value dynamically
+    # FIXED: Added the missing variable 'badge_text' to match the 3 elements being unpacked
     if prediction >= 85:
-        badge_color, badge_text = "#ecfdf5", "#059669", "Excellent Standing"
+        badge_bg, badge_color, badge_text = "#ecfdf5", "#059669", "Excellent Standing"
     elif prediction >= 60:
-        badge_color, badge_text = "#eff6ff", "#2563eb", "Good Standing"
+        badge_bg, badge_color, badge_text = "#eff6ff", "#2563eb", "Good Standing"
     else:
-        badge_color, badge_text = "#fef2f2", "#dc2626", "Needs Focus"
+        badge_bg, badge_color, badge_text = "#fef2f2", "#dc2626", "Needs Focus"
         
-    # Render new dynamic analytics viewport card complete with shadow and color transitions
+    # Render analytics viewport card
     st.markdown(f"""
         <div class="result-container">
-            <span class="metric-badge" style="background-color: {badge_color}; color: {badge_text[1]};">
-                {badge_text[2]}
+            <span class="metric-badge" style="background-color: {badge_bg}; color: {badge_color};">
+                {badge_text}
             </span>
             <div class="score-output">{prediction:.1f} / 100</div>
             <p class="status-text">Based on KNN algorithmic mapping of local variance and study metrics.</p>
         </div>
     """, unsafe_allow_html=True)
     
-    # Fully interactive companion widget (Streamlit native progress bar reacting directly to prediction metrics)
+    # Live interactive companion widget progress bar
     st.progress(min(max(prediction / 100.0, 0.0), 1.0))
 
 st.markdown('</div>', unsafe_allow_html=True)
