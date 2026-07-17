@@ -2,250 +2,169 @@ import streamlit as st
 import pickle
 import numpy as np
 
-# Set page configuration with a cute kitty emoji
+# ---------------------------
+# Page Config
+# ---------------------------
 st.set_page_config(
-    page_title="Kitty Score Tracker 🐾",
-    page_icon="🌸",
-    layout="centered"
+    page_title="Student Performance Predictor",
+    page_icon="🎓",
+    layout="wide",
 )
 
-# 3D Kawaii Kitty Pink / Cartoon UI Styling
+# ---------------------------
+# Custom CSS
+# ---------------------------
 st.markdown("""
-    <style>
-    /* Soft pastel pink gradient background with a subtle playful touch */
-    .stApp {
-        background: linear-gradient(135deg, #ffe4e6 0%, #fbcfe8 50%, #f472b6 100%);
-    }
-    
-    /* 3D Soft Clay Outer Card Container */
-    .kitty-card {
-        background: #ffffff;
-        padding: 35px;
-        border-radius: 30px;
-        box-shadow: 
-            0px 10px 0px #f472b6,
-            0px 20px 30px rgba(244, 114, 182, 0.2);
-        border: 4px solid #4c1d95; /* Deep purple borders for high-contrast cartoon styling */
-        margin-bottom: 25px;
-    }
-    
-    /* Kawaii Kitty Header Bubble */
-    .bubble-header {
-        background: #f472b6;
-        border: 4px solid #4c1d95;
-        border-radius: 22px;
-        padding: 18px;
-        text-align: center;
-        box-shadow: 5px 5px 0px #4c1d95;
-        margin-bottom: 35px;
-        position: relative;
-    }
-    
-    .bubble-title {
-        color: #ffffff;
-        font-size: 30px;
-        font-weight: 900;
-        font-family: 'Comic Sans MS', 'Chalkboard SE', sans-serif;
-        margin: 0;
-        text-shadow: 3px 3px 0px #4c1d95;
-    }
-    
-    .bubble-subtitle {
-        color: #ffe4e6;
-        font-size: 14px;
-        font-weight: 700;
-        margin-top: 5px;
-        letter-spacing: 0.5px;
-    }
-    
-    /* Transforming Input Blocks into 3D Cartoon Pink Panels */
-    div[data-testid="stNumberInput"], div[data-testid="stSlider"] {
-        background: #fff5f7 !important;
-        padding: 18px !important;
-        border-radius: 20px !important;
-        border: 3px solid #4c1d95 !important;
-        box-shadow: 4px 4px 0px #4c1d95 !important;
-        margin-bottom: 24px !important;
-        transition: transform 0.1s ease !important;
-    }
-    
-    div[data-testid="stNumberInput"]:focus-within, div[data-testid="stSlider"]:focus-within {
-        transform: translate(-2px, -2px) !important;
-        box-shadow: 6px 6px 0px #4c1d95 !important;
-        background: #ffffff !important;
-    }
-    
-    /* Chunky 3D Cartoon Kitty Button */
-    .stButton > button {
-        width: 100%;
-        background: #ff85a2;
-        color: #ffffff !important;
-        border: 4px solid #4c1d95;
-        border-radius: 20px;
-        padding: 16px 24px;
-        font-size: 20px;
-        font-weight: 900;
-        font-family: 'Comic Sans MS', sans-serif;
-        box-shadow: 0px 6px 0px #4c1d95;
-        transition: all 0.1s ease;
-    }
-    
-    .stButton > button:hover {
-        background: #ff6584;
-        color: #ffffff !important;
-        transform: translateY(2px);
-        box-shadow: 0px 4px 0px #4c1d95;
-    }
-    
-    .stButton > button:active {
-        transform: translateY(6px);
-        box-shadow: 0px 0px 0px #4c1d95;
-    }
-    
-    /* Aesthetic 3D Result Viewport */
-    .kitty-result {
-        margin-top: 30px;
-        padding: 25px;
-        background: #ffffff;
-        border-radius: 24px;
-        border: 4px solid #4c1d95;
-        box-shadow: 6px 6px 0px #4c1d95;
-        text-align: center;
-    }
-    
-    .kitty-badge {
-        display: inline-block;
-        padding: 8px 18px;
-        font-size: 15px;
-        font-weight: 900;
-        border-radius: 30px;
-        border: 3px solid #4c1d95;
-        box-shadow: 2px 2px 0px #4c1d95;
-        margin-bottom: 15px;
-        font-family: 'Comic Sans MS', sans-serif;
-    }
-    
-    .kitty-score {
-        font-size: 48px;
-        font-weight: 900;
-        color: #4c1d95;
-        font-family: 'Comic Sans MS', sans-serif;
-        margin: 5px 0;
-    }
-    
-    .kitty-subtext {
-        font-size: 13px;
-        color: #701a75;
-        font-weight: 600;
-    }
-    
-    /* Custom Styling for Progress Bar to fit the theme */
-    .stProgress > div > div > div > div {
-        background-color: #ff85a2;
-        border-radius: 10px;
-    }
-    .stProgress {
-        border: 3px solid #4c1d95;
-        border-radius: 12px;
-        height: 22px;
-        overflow: hidden;
-        background: #fff5f7;
-        margin-top: 20px;
-    }
-    </style>
+<style>
+
+.main{
+background: linear-gradient(135deg,#f5f7fa,#c3cfe2);
+}
+
+.title{
+text-align:center;
+font-size:45px;
+font-weight:bold;
+color:#1f3b73;
+}
+
+.sub{
+text-align:center;
+font-size:20px;
+color:gray;
+margin-bottom:30px;
+}
+
+.stButton>button{
+width:100%;
+background:linear-gradient(90deg,#4CAF50,#2196F3);
+color:white;
+font-size:20px;
+border-radius:12px;
+height:3.2em;
+border:none;
+}
+
+.stButton>button:hover{
+background:linear-gradient(90deg,#2196F3,#4CAF50);
+}
+
+.prediction{
+padding:25px;
+border-radius:15px;
+background:#ffffff;
+box-shadow:0px 0px 20px rgba(0,0,0,0.2);
+text-align:center;
+font-size:28px;
+font-weight:bold;
+color:#1b5e20;
+}
+
+.footer{
+text-align:center;
+color:gray;
+padding-top:40px;
+}
+
+</style>
 """, unsafe_allow_html=True)
 
-# Load model pipeline securely
+# ---------------------------
+# Load Model
+# ---------------------------
 @st.cache_resource
 def load_model():
-    with open("model.pkl", "rb") as file:
-        model = pickle.load(file)
+    with open("model.pkl","rb") as file:
+        model=pickle.load(file)
     return model
 
-try:
-    model = load_model()
-except Exception as e:
-    st.error(f"Error loading model binary: {e}")
-    st.stop()
+model=load_model()
 
-# Wrap whole UI inside a centralized card container block
-st.markdown('<div class="kitty-card">', unsafe_allow_html=True)
+# ---------------------------
+# Header
+# ---------------------------
 
-# Kawaii Kitty Header Bubble
-st.markdown("""
-    <div class="bubble-header">
-        <h1 class="bubble-title">🐾 Kitty Score Predictor 🐾</h1>
-        <div class="bubble-subtitle">Let's check your magic score nyaa~! 💕🧁</div>
-    </div>
-""", unsafe_allow_html=True)
+st.markdown("<div class='title'>🎓 Student Performance Predictor</div>",unsafe_allow_html=True)
 
-# Vertical Cartoon Inputs
-hours_studied = st.number_input(
-    "🌸 Study Time (Hours/Day)", 
-    min_value=0.0, 
-    max_value=24.0, 
-    value=6.0, 
-    step=0.5,
-    help="Time spent working hard every day!"
-)
+st.markdown("<div class='sub'>Predict Student Performance using Machine Learning</div>",unsafe_allow_html=True)
 
-sleep_hours = st.number_input(
-    "🎀 Nap Time (Sleep Hours)", 
-    min_value=0.0, 
-    max_value=24.0, 
-    value=7.5, 
-    step=0.5,
-    help="How long you rest your brain to recharge!"
-)
+# ---------------------------
+# Sidebar
+# ---------------------------
 
-attendance_percent = st.slider(
-    "🎒 School Attendance (%)", 
-    min_value=0.0, 
-    max_value=100.0, 
-    value=90.0, 
-    step=1.0,
-    help="Percentage of school days attended!"
-)
+st.sidebar.image("https://cdn-icons-png.flaticon.com/512/3135/3135755.png",width=120)
 
-previous_scores = st.slider(
-    "🍭 Past Exam Score", 
-    min_value=0.0, 
-    max_value=100.0, 
-    value=78.0, 
-    step=1.0,
-    help="Your score from your last test!"
-)
+st.sidebar.title("About")
 
-st.markdown("<div style='margin-top: 15px;'></div>", unsafe_allow_html=True)
+st.sidebar.info("""
+This application predicts the student's expected score based on:
 
-# Execution Action State
-if st.button("🐾 Calculate Prediction! ✨"):
-    # Format structural array payload mapping to model parameters
-    features = np.array([[hours_studied, sleep_hours, attendance_percent, previous_scores]])
-    
-    # Process output matrix scalar
-    prediction = float(model.predict(features)[0])
-    
-    # Determine cute custom kitty badges dynamically
-    if prediction >= 85:
-        badge_bg, badge_text = "#ffe4e6", "🐱 Pure Purr-fection! 🏆"
-    elif prediction >= 60:
-        badge_bg, badge_text = "#fce7f3", "😸 Happy Kitty Doing Great! ✨"
-    else:
-        badge_bg, badge_text = "#fee2e2", "😿 Sweet Kitty Can Do Better! 💪"
-        
-    # Render cute aesthetic 3D kitty result card
-    st.markdown(f"""
-        <div class="kitty-result">
-            <span class="kitty-badge" style="background-color: {badge_bg}; color: #4c1d95;">
-                {badge_text}
-            </span>
-            <div class="kitty-score">💖 {prediction:.1f} / 100</div>
-            <p class="kitty-subtext">Calculated perfectly by your sweet AI companion bot!</p>
+✔ Hours Studied
+
+✔ Sleep Hours
+
+✔ Attendance %
+
+✔ Previous Scores
+
+Model Used:
+KNeighborsRegressor
+""")
+
+# ---------------------------
+# Layout
+# ---------------------------
+
+col1,col2=st.columns(2)
+
+with col1:
+
+    hours=st.slider(
+        "📚 Hours Studied",
+        0.0,
+        15.0,
+        5.0,
+        0.5)
+
+    sleep=st.slider(
+        "😴 Sleep Hours",
+        0.0,
+        12.0,
+        7.0,
+        0.5)
+
+with col2:
+
+    attendance=st.slider(
+        "🏫 Attendance %",
+        0,
+        100,
+        75)
+
+    previous=st.slider(
+        "📝 Previous Scores",
+        0,
+        100,
+        70)
+
+st.write("")
+
+if st.button("🚀 Predict Performance"):
+
+    features=np.array([[hours,sleep,attendance,previous]])
+
+    prediction=model.predict(features)[0]
+
+    st.balloons()
+
+    st.markdown(
+        f"""
+        <div class='prediction'>
+        Predicted Score<br><br>
+        {prediction:.2f}
         </div>
-    """, unsafe_allow_html=True)
-    
-    # Matching pink progress bar animation
-    st.progress(min(max(prediction / 100.0, 0.0), 1.0))
+        """,
+        unsafe_allow_html=True
+    )
 
-st.markdown('</div>', unsafe_allow_html=True)
+st.markdown("<div class='footer'>Made with ❤️ using Streamlit</div>",unsafe_allow_html=True)
