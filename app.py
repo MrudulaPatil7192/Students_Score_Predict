@@ -2,139 +2,158 @@ import streamlit as st
 import pickle
 import numpy as np
 
-# Set premium page configuration
+# Set page configuration with a cute emoji
 st.set_page_config(
-    page_title="Performance Analytics AI",
-    page_icon="⚡",
+    page_title="Study Buddy AI",
+    page_icon="✨",
     layout="centered"
 )
 
-# Advanced CSS for Glassmorphism, structural card shadows, and smooth micro-interactions
+# 3D Claymorphism / Cute Cartoon UI Styling
 st.markdown("""
     <style>
-    /* Global background gradient */
+    /* Playful pastel gradient background */
     .stApp {
-        background: linear-gradient(180deg, #f0f4f8 0%, #e2e8f0 100%);
+        background: linear-gradient(135deg, #fef08a 0%, #d9f99d 50%, #a7f3d0 100%);
     }
     
-    /* Core app shell card */
-    .app-card {
+    /* 3D Soft Clay Outer Card Container */
+    .cute-card {
         background: #ffffff;
         padding: 35px;
-        border-radius: 20px;
-        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.06);
-        border: 1px solid rgba(255, 255, 255, 0.8);
+        border-radius: 28px;
+        box-shadow: 
+            0px 10px 0px #e2e8f0,
+            0px 20px 30px rgba(100, 116, 139, 0.15);
+        border: 4px solid #000000;
         margin-bottom: 25px;
     }
     
-    /* Glassmorphic Title Header */
-    .glass-header {
-        background: rgba(79, 70, 229, 0.06);
-        backdrop-filter: blur(10px);
-        -webkit-backdrop-filter: blur(10px);
-        border-radius: 16px;
-        padding: 20px;
-        border: 1px solid rgba(79, 70, 229, 0.15);
+    /* Cartoon Header Bubble */
+    .bubble-header {
+        background: #818cf8;
+        border: 4px solid #000000;
+        border-radius: 20px;
+        padding: 15px;
         text-align: center;
+        box-shadow: 4px 4px 0px #000000;
         margin-bottom: 30px;
     }
     
-    .glass-title {
-        color: #1e1b4b;
-        font-size: 30px;
-        font-weight: 800;
-        letter-spacing: -0.5px;
+    .bubble-title {
+        color: #ffffff;
+        font-size: 28px;
+        font-weight: 900;
+        font-family: 'Comic Sans MS', 'Chalkboard SE', sans-serif;
         margin: 0;
     }
     
-    .glass-subtitle {
-        color: #6366f1;
-        font-size: 14px;
-        font-weight: 600;
-        margin-top: 5px;
-        text-transform: uppercase;
-        letter-spacing: 1px;
+    .bubble-subtitle {
+        color: #e0e7ff;
+        font-size: 13px;
+        font-weight: 700;
+        margin-top: 4px;
+        letter-spacing: 0.5px;
     }
     
-    /* Interactive Hover Styling for Input Wrappers */
+    /* Transforming Input Blocks into 3D Cartoon Cards */
     div[data-testid="stNumberInput"], div[data-testid="stSlider"] {
-        background: #ffffff !important;
-        padding: 20px !important;
-        border-radius: 14px !important;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.02) !important;
-        border: 1px solid #e2e8f0 !important;
-        margin-bottom: 22px !important;
-        transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        background: #f8fafc !important;
+        padding: 18px !important;
+        border-radius: 18px !important;
+        border: 3px solid #000000 !important;
+        box-shadow: 4px 4px 0px #000000 !important;
+        margin-bottom: 24px !important;
+        transition: transform 0.1s ease !important;
     }
     
     div[data-testid="stNumberInput"]:focus-within, div[data-testid="stSlider"]:focus-within {
-        transform: translateY(-2px);
-        border-color: #6366f1 !important;
-        box-shadow: 0 10px 20px rgba(99, 102, 241, 0.08) !important;
+        transform: translate(-2px, -2px) !important;
+        box-shadow: 6px 6px 0px #000000 !important;
+        background: #fff !important;
     }
     
-    /* High-fidelity interactive button */
+    /* Chunky 3D Cartoon Button */
     .stButton > button {
         width: 100%;
-        background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
-        color: white !important;
-        border: none;
-        border-radius: 12px;
-        padding: 14px 24px;
-        font-size: 16px;
-        font-weight: 700;
-        letter-spacing: 0.5px;
-        box-shadow: 0 6px 20px rgba(79, 70, 229, 0.25);
-        transition: all 0.2s ease;
+        background: #fb923c;
+        color: #ffffff !important;
+        border: 4px solid #000000;
+        border-radius: 18px;
+        padding: 15px 24px;
+        font-size: 18px;
+        font-weight: 900;
+        font-family: 'Comic Sans MS', sans-serif;
+        box-shadow: 0px 6px 0px #000000;
+        transition: all 0.1s ease;
     }
     
     .stButton > button:hover {
-        transform: scale(1.01);
-        box-shadow: 0 8px 25px rgba(79, 70, 229, 0.35);
-        background: linear-gradient(135deg, #4f46e5 0%, #4338ca 100%);
+        background: #f97316;
+        color: #ffffff !important;
+        transform: translateY(2px);
+        box-shadow: 0px 4px 0px #000000;
     }
     
     .stButton > button:active {
-        transform: scale(0.99);
+        transform: translateY(6px);
+        box-shadow: 0px 0px 0px #000000;
     }
     
-    /* Premium Interactive Result Display */
-    .result-container {
+    /* Aesthetic 3D Result Viewport */
+    .cute-result {
         margin-top: 30px;
         padding: 25px;
         background: #ffffff;
-        border-radius: 16px;
-        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.08);
-        border: 1px solid #e2e8f0;
+        border-radius: 22px;
+        border: 4px solid #000000;
+        box-shadow: 6px 6px 0px #000000;
         text-align: center;
     }
     
-    .metric-badge {
+    .cute-badge {
         display: inline-block;
-        padding: 6px 14px;
-        font-size: 12px;
-        font-weight: 700;
-        border-radius: 20px;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-        margin-bottom: 10px;
+        padding: 8px 16px;
+        font-size: 14px;
+        font-weight: 900;
+        border-radius: 30px;
+        border: 3px solid #000000;
+        box-shadow: 2px 2px 0px #000000;
+        margin-bottom: 15px;
+        font-family: 'Comic Sans MS', sans-serif;
     }
     
-    .score-output {
-        font-size: 42px;
+    .cute-score {
+        font-size: 46px;
         font-weight: 900;
-        color: #1e1b4b;
+        color: #000000;
+        font-family: 'Comic Sans MS', sans-serif;
         margin: 5px 0;
     }
     
-    .status-text {
-        font-size: 14px;
-        color: #6b7280;
+    .cute-subtext {
+        font-size: 13px;
+        color: #64748b;
+        font-weight: 600;
+    }
+    
+    /* Custom Stylings for Progress Bar to fit aesthetic */
+    .stProgress > div > div > div > div {
+        background-color: #4ade80;
+        border-radius: 10px;
+    }
+    .stProgress {
+        border: 3px solid #000000;
+        border-radius: 12px;
+        height: 20px;
+        overflow: hidden;
+        background: #f1f5f9;
+        margin-top: 15px;
     }
     </style>
 """, unsafe_allow_html=True)
 
-# Load model pipeline securely
+# Load model pipeline 
 @st.cache_resource
 def load_model():
     with open("model.pkl", "rb") as file:
@@ -147,84 +166,84 @@ except Exception as e:
     st.error(f"Error loading model binary: {e}")
     st.stop()
 
-# Wrap whole UI inside a centralized, structurally clean container block
-st.markdown('<div class="app-card">', unsafe_allow_html=True)
+# Wrap whole UI inside a centralized cute container block
+st.markdown('<div class="cute-card">', unsafe_allow_html=True)
 
-# Glassmorphic Banner Header 
+# Cartoon Header Bubble
 st.markdown("""
-    <div class="glass-header">
-        <h1 class="glass-title">Predictive Student Analytics</h1>
-        <div class="glass-subtitle">Machine Learning Engine v1.6</div>
+    <div class="bubble-header">
+        <h1 class="bubble-title">✨ Study Buddy AI ✨</h1>
+        <div class="bubble-subtitle">Let's guess your next score! 🧠🎈</div>
     </div>
 """, unsafe_allow_html=True)
 
-# Sequential Input Fields with interactive placeholder helpers
+# Vertical Cartoon Inputs
 hours_studied = st.number_input(
-    "📚 Daily Study Commitment", 
+    "📖 Daily Study Time (Hours)", 
     min_value=0.0, 
     max_value=24.0, 
     value=6.0, 
     step=0.5,
-    help="How many hours does the student allocate strictly to studying per day?"
+    help="Hours hitting the books each day!"
 )
 
 sleep_hours = st.number_input(
-    "😴 Nightly Rest Duration", 
+    "😴 Cozy Sleep Time (Hours)", 
     min_value=0.0, 
     max_value=24.0, 
     value=7.5, 
     step=0.5,
-    help="Average duration of sleep recorded nightly."
+    help="How long you rest your brain every night."
 )
 
 attendance_percent = st.slider(
-    "🏫 Institutional Attendance Profile", 
+    "🎒 Class Attendance (%)", 
     min_value=0.0, 
     max_value=100.0, 
     value=90.0, 
     step=1.0,
-    help="Overall class attendance percentage recorded over the current semester."
+    help="Percentage of days you made it to class!"
 )
 
 previous_scores = st.slider(
-    "📊 Prior Academic Standing", 
+    "🌈 Last Exam Score", 
     min_value=0.0, 
     max_value=100.0, 
     value=78.0, 
     step=1.0,
-    help="The target student's absolute score in their immediate past evaluation cycle."
+    help="What did you get on your previous test?"
 )
 
 st.markdown("<div style='margin-top: 15px;'></div>", unsafe_allow_html=True)
 
 # Execution Action State
-if st.button("Analyze & Compute Grade"):
-    # Format structural array payload mapping to ['hours_studied', 'sleep_hours', 'attendance_percent', 'previous_scores']
+if st.button("🔮 Calculate Magic Score! 🔮"):
+    # Format structural payload matching model
     features = np.array([[hours_studied, sleep_hours, attendance_percent, previous_scores]])
     
     # Process output matrix scalar
     prediction = float(model.predict(features)[0])
     
-    # FIXED: Added the missing variable 'badge_text' to match the 3 elements being unpacked
+    # Determine cartoon badges dynamically
     if prediction >= 85:
-        badge_bg, badge_color, badge_text = "#ecfdf5", "#059669", "Excellent Standing"
+        badge_bg, badge_text = "#bbf7d0", "🌟 Superstar Student! 🌟"
     elif prediction >= 60:
-        badge_bg, badge_color, badge_text = "#eff6ff", "#2563eb", "Good Standing"
+        badge_bg, badge_text = "#bfdbfe", "⭐ Doing Great! ⭐"
     else:
-        badge_bg, badge_color, badge_text = "#fef2f2", "#dc2626", "Needs Focus"
+        badge_bg, badge_text = "#fecdd3", "🌱 You Got This! Keep Going 🌱"
         
-    # Render analytics viewport card
+    # Render cute aesthetic 3D result card
     st.markdown(f"""
-        <div class="result-container">
-            <span class="metric-badge" style="background-color: {badge_bg}; color: {badge_color};">
+        <div class="cute-result">
+            <span class="cute-badge" style="background-color: {badge_bg};">
                 {badge_text}
             </span>
-            <div class="score-output">{prediction:.1f} / 100</div>
-            <p class="status-text">Based on KNN algorithmic mapping of local variance and study metrics.</p>
+            <div class="cute-score">🎉 {prediction:.1f} / 100</div>
+            <p class="cute-subtext">Calculated perfectly by your friendly AI neighborhood predictor bot!</p>
         </div>
     """, unsafe_allow_html=True)
     
-    # Live interactive companion widget progress bar
+    # Matching cute progress bar animation
     st.progress(min(max(prediction / 100.0, 0.0), 1.0))
 
 st.markdown('</div>', unsafe_allow_html=True)
