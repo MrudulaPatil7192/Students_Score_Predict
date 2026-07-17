@@ -56,7 +56,7 @@ except Exception as e:
 # Header App section
 st.title("🎓 Student Performance Predictor")
 st.markdown("Enter the student details below to predict their performance score using the trained KNN model.")
-st.hr()
+st.divider() # Fixed the st.hr() error here
 
 # Input layout using columns
 col1, col2 = st.columns(2)
@@ -99,7 +99,7 @@ with col2:
         help="Score achieved in the previous evaluation."
     )
 
-st.markdown("---")
+st.divider()
 
 # Prediction logic
 if st.button("Predict Score"):
